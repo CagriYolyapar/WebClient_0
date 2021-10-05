@@ -82,12 +82,28 @@
             {
 
 
-                $("#tab1").append("<tr><td>"+data.ID+" </td> <td>"+data.Name+" </td><td>"+data.Description+" </td>    </tr>");
+                $("#tab1").append("<tr><td>" + data.ID + " </td> <td>" + data.Name + " </td><td>" + data.Description + " </td> <td> <button data-id='" + data.ID + "' id='update" + data.ID + "' value='update' class='btn btn-warning'>Güncelle </button> </td> <td> <button data-id='" + data.ID + "' class='btn btn-danger' id='delete" + data.ID + "' value='delete'> Sil </button> </td><td> <button class='btn btn-primary' data-id='" + data.ID + "' id='select" + data.ID + "' value='select'>Seç </button> </td> </tr>");
 
 
             })
 
         }
+
+        //Bu fonksiyonumuzun amacı API'ya gittigimiz zaman aldıgımız tekil veriyi tasarımda tablomuzun icerisine entegre etmektir...
+        function BringData(data) {
+            ControlHeader();
+
+
+
+            $("#tab1").append("<tr><td>" + data.ID + " </td> <td>" + data.Name + " </td><td>" + data.Description + " </td> <td> <button data-id='" + data.ID + "' id='update" + data.ID + "' value='update' class='btn btn-warning'>Güncelle </button> </td> <td> <button data-id='" + data.ID + "' class='btn btn-danger' id='delete" + data.ID + "' value='delete'> Sil </button> </td><td> <button class='btn btn-primary' data-id='" + data.ID + "' id='select" + data.ID + "' value='select'>Seç </button> </td> </tr>");
+        }
+
+        function FetchData(data) {
+            $("#txtID").val(data.ID);
+            $("#txtName").val(data.CategoryName);
+            $("#txtDescription").val(data.Description);
+        }
+
 
 
 
@@ -114,6 +130,74 @@
 
 
             })
+
+            //Kategori Getir
+
+
+            $("#btnID").click(function () {
+
+                $.ajax({
+                    url: "https://localhost:44373/api/Category/GetCategory",//burada dilerseniz data parametresinde JSon verisi göndermek yerine URL'e de direkt /$("#txtID").val() yazılabilir...Ama sakın GetCategory'den sonra slash koymayı unutmayın...Ve bir de bu ancak gitmek istediginiz Metodun parametresinin ismi id ise gecerlidir...
+                    data: { id: $("#txtID").val() },
+                    type: "Get",
+                    success: function (data) {
+                        BringData(data);
+                    }
+
+
+                })
+            })
+
+            
+
+            //Kategori Ekle
+            $("#btnAdd").click(function () {
+                $.ajax({
+                    url: "https://localhost:44373/api/Category/AddCategory",
+                    type: "Post",
+                    data: { CategoryName: $("#txtName").val(), Description: $("#txtDesc").val() },
+                    success: function (data) {
+                        BringDataList(data);
+                    }
+
+                })
+            })
+
+            //Kategori Sil
+
+            //Delete yöntemlerinde Data ile server'a veri gönderemezsiniz...O yüzden mecburi bir şekilde ID verisini URL'den  vermeniz gerekir...
+
+            $("#btnDelete").click(function () {
+                $.ajax({
+                    url: "https://localhost:44373/api/Category/DeleteCategory/" + $("#txtID").val(),
+                    type: "Delete",
+                    success: function (data) {
+                        BringDataList(data);
+                    }
+                })
+            })
+
+
+            //Kategori güncelleme
+
+            $("#btnUpdate").click(function () {
+                $.ajax({
+                    url: "https://localhost:44373/api/Category/UpdateCategory",
+                    data: { CategoryID: $("#txtID").val(), CategoryName: $("#txtName").val(), Description: $("#txtDesc").val() },
+                    type: "Put",
+                    success: function (data) {
+                        BringDataList(data);
+
+
+                    }
+
+                })
+            })
+
+
+
+
+            //JS Runtime EventHandling
 
 
 
