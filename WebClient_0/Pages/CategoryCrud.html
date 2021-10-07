@@ -100,8 +100,8 @@
 
         function FetchData(data) {
             $("#txtID").val(data.ID);
-            $("#txtName").val(data.CategoryName);
-            $("#txtDescription").val(data.Description);
+            $("#txtName").val(data.Name);
+            $("#txtDesc").val(data.Description);
         }
 
 
@@ -199,6 +199,69 @@
 
             //JS Runtime EventHandling
 
+            //Select button
+
+            $("#tab1").on("click", "[value=select]", function ()
+            {
+
+                $.ajax({
+                    url: "https://localhost:44373/api/Category/GetCategory",
+                    data: { id: $(this).attr("data-id") },
+                    type: "Get",
+                    success: function (data) {
+                        FetchData(data);
+                    }
+                })
+
+
+
+
+
+            })
+
+            //Delete Button
+
+            $("#tab1").on("click", "[value=delete]", function () {
+
+                $.ajax({
+                    url: "https://localhost:44373/api/Category/DeleteCategory/" + $(this).attr("data-id"),
+                    type: "Delete",
+                    success: function (data) {
+                        BringDataList(data);
+                    }
+                })
+
+
+            })
+
+
+            //Update Button
+            $("#tab1").on("click", "[value=update]", function () {
+                $.ajax({
+                    url: "https://localhost:44373/api/Category/UpdateCategory",
+                    type: "Put",
+                    data: { CategoryID: $(this).attr("data-id"), CategoryName: $("#txtName").val(), Description: $("#txtDesc").val() },
+                    success: function (data) {
+                        BringDataList(data);
+                    }
+                })
+            })
+
+            //Search Category
+
+            $("#txtSearch").keyup(function () {
+
+                $.ajax({
+                    url: "https://localhost:44373/api/Category/SearchCategory",
+                    data: { item: $(this).val() },
+                    type: "Get",
+                    success: function (data) {
+                        BringDataList(data);
+                    }
+                })
+
+
+            })
 
 
         })
